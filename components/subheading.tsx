@@ -1,7 +1,7 @@
 
 export default function SubHeading({label}:SubHeadingProps) {
     return (
-        <div className='text-lg font-semibold'>
+        <div className='text-xl text-slate-600'>
             {label}
         </div>
     )

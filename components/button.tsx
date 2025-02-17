@@ -5,6 +5,8 @@ interface ButtonProps {
 
 export default function Button({label}:ButtonProps) {
     return (
-        <button className=''>{label}</button>
+        <div className='p-6 w-full'>
+            <button className='bg-slate-900 rounded-lg w-full text-white px-1 py-3'>{label}</button>
+        </div>
     )
 }
