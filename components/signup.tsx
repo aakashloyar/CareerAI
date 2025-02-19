@@ -1,8 +1,10 @@
+"use client"
 import Heading from './heading'
 import Button from './button'
 import SubHeading from './subheading'
 import InputBox from './inputbox'
 import BottomWarning from './Bottomwarning'
+import {signIn} from 'next-auth/react'
 export default function SignUp() {
     return (
         <div className='bg-slate-200 w-full h-screen flex justify-center'>
@@ -27,12 +29,31 @@ export default function SignUp() {
                        <InputBox label={'Password'} placeholder='******'/>
                     </div>
                     <div className='flex justify-center'>
-                        <Button label={'Sign Up'}/>
+                        <Button label={'Sign Up'} handleClick={function(){
+                            console.log('button clicked')
+                        }}/>
                     </div>
 
                     <div>
                         <BottomWarning label={'Already have an Account?'} blabel={'Signin'}/>
                     </div>
+                    <div className='flex justify-center pt-4 pb-1'>
+                        <div className='px-2'>
+                            <button onClick={() => signIn('google' ,{callbackUrl: 'http://localhost:3000' })}>
+                                    <img src="/google.png" alt="Sign in with Google" />
+                            </button>
+                        </div>
+
+                        <div className='px-2'>
+                            <button onClick={() => signIn('github' ,{callbackUrl: 'http://localhost:3000' })}>
+                                    <img src="/github.png" alt="Sign in with Github" />
+                            </button>
+                        </div>
+
+                        
+
+                    </div>
+                    
                 </div>
             </div>
         </div>

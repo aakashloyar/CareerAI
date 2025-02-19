@@ -1,3 +1,4 @@
+
 export default function SignInLayout({
     children,
   }: Readonly<{
@@ -5,7 +6,6 @@ export default function SignInLayout({
   }>) {
     return (
         <div>
-            This is layout of signin 
             {children}
         </div>
     );

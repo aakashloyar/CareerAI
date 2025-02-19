@@ -1,5 +1,3 @@
-
-
 export default function BottomWarning({label,blabel}:BottomWarningP) {
     return (
         <div className=''>
@@ -14,8 +12,6 @@ export default function BottomWarning({label,blabel}:BottomWarningP) {
         </div>
     )
 }
-
-
 
 interface BottomWarningP {
     label: string;
