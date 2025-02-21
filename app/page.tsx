@@ -1,9 +1,18 @@
+"use client"
+
 import Image from "next/image";
 import Card from '@/components/card'
 import UnCard from '@/components/uncard'
+import { useSession } from "next-auth/react";
 export default function Home() {
+  const session = useSession();
   return (
     <div className='bg-slate-900 min-h-screen text-white '>
+       <div className=' flex justify-center pt-32 text-xl text-gray-300 px-52'>
+          {/* {JSON.stringify(session.data?.user?.name)} */}
+          {session.data?.user?.name}
+      </div>
+
       <div className='flex justify-center pt-32 text-7xl font-bold text-gray-300 px-52'>
         Your AI Career Coach for
       </div>
@@ -59,9 +68,7 @@ export default function Home() {
         </div>
 
       </div>
-      <div className=' pb-96'>
-          dfd
-      </div>
+     
     </div>
   );
 }
