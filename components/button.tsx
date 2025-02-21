@@ -1,3 +1,5 @@
+"use client"
+
 interface ButtonProps {
     label: string;
     handleClick:()=>void;
