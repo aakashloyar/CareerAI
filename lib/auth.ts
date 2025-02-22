@@ -42,13 +42,15 @@ export const authoptions={
     callbacks: {
         async jwt({ token, account }:{token:JWT ;account:any}) {
             // Persist the OAuth access_token to the token right after signin
+            console.log(token);
+            console.log(account);
             if (account) {
               token.accessToken = account.access_token
-              
             }
             return token
         },
         async session({ session, token, user }:{session:Session;token:JWT;user:UsersSignInType}) {
+
             return session
         }
     }
