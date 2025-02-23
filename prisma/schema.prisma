@@ -18,30 +18,15 @@ datasource db {
 model User {
   id            String    @id @default(uuid())   // Unique ID for each user
   email         String    @unique                 // Email is the unique identifier
-  firstname     String?   // First name (optional)
-  lastname      String?   // Last name (optional)
+  firstName     String?   // First name (optional)
+  lastName      String?   // Last name (optional)
   password      String?   // Password (nullable for OAuth users)
   emailVerified Boolean   @default(false)         // Whether the email is verified
   profileImage  String?   // Profile picture URL (optional)
   lastLogin     DateTime? // Timestamp of last login (optional)
-
-  // Relation to Account model (handles multiple OAuth accounts)
-  accounts      Account[] // A user can have multiple OAuth accounts (GitHub, Google, etc.)
 }
 
 
-
-
-model Account {
-  id            String   @id @default(uuid())    // Unique ID for each OAuth account
-  userId        String                                 // Foreign key to the User table
-  provider      String   // OAuth provider (google, github)
-  providerId    String   // Unique ID from the OAuth provider (e.g., GitHub user ID, Google ID)
-  createdAt     DateTime @default(now())             // Timestamp of when the account was created
-
-  // Foreign Key Relation to User
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
 
 

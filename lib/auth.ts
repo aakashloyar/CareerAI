@@ -61,3 +61,6 @@ export const authoptions={
     ,secret:process.env.NEXT_AUTH_SECRET
 
 }
+
+
+
