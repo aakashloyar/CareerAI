@@ -18,6 +18,10 @@ export default function SignUp() {
     const [password,setpassword]=useState("");
     const router=useRouter();
     const [errors, setErrors] = useState<Record<string, string>>({}); // ✅ State for field-specific errors
+    const handleClick=()=>{
+        submit({firstName:firstName,lastName:lastName,email:email,password:password},router,setErrors)
+        console.log(errors);
+    }
     return (
         <div className='bg-slate-200 w-full h-screen flex justify-center'>
             <div className='flex flex-col justify-center'>
@@ -50,12 +54,15 @@ export default function SignUp() {
                        <InputBox handleChange={(e)=>{
                             setpassword(e.target.value)
                         }} label={'Password'} placeholder='******'/>
-                        {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
+                        {errors.password?<div className="text-red-500 text-sm">{errors.password}</div>:null}
                     </div>
                     <div className='flex justify-center'>
                         <Button label={'Sign Up'} 
-                        handleClick={()=>submit({firstName:firstName,lastName:lastName,email:email,password:password},router,setErrors)}
+                        handleClick={handleClick}
                         />
+                    </div>
+                    <div className='flex justify-center'>
+                    {errors.api?<div className="text-red-500 text-sm">{errors.api}</div>:null}
                     </div>
 
                     <div>
@@ -73,9 +80,6 @@ export default function SignUp() {
                                     <img src="/github.png" alt="Sign in with Github" />
                             </button>
                         </div>
-
-                        
-
                     </div>
                     
                 </div>
@@ -104,7 +108,6 @@ async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>
         if (errorDetails.password?._errors.length) {
           formattedErrors.password = errorDetails.password._errors[0];
         }
-        console.log(validationResult);
         setErrors(formattedErrors);
         return;
     }
@@ -113,7 +116,8 @@ async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>
       router.push('/');
 
     } catch (err: any) {
-        setErrors({ api: err.response?.data?.message || "Signup failed. Please try again." });
+        console.log(err);
+        setErrors({ api: err.response?.data?.error || "Signup failed. Please try again." });
     }    
 };
 
