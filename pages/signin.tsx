@@ -37,7 +37,7 @@ export default function SignIn() {
                     </div>
 
                     <div>
-                        <BottomWarning label={'Donot have an Account?'} blabel={'SignUp'}/>
+                        <BottomWarning label={'Donot have an Account?'} blabel={'SignUp'} link={'/auth/signup'}/>
                     </div>
                     <div className='flex justify-center pt-4 pb-1'>
                         <div className='px-2'>

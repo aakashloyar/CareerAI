@@ -1,4 +1,6 @@
-export default function BottomWarning({label,blabel}:BottomWarningP) {
+import {useRouter} from 'next/navigation'
+export default function BottomWarning({label,blabel,link}:BottomWarningP) {
+    const router=useRouter();
     return (
         <div className=''>
             <div className='flex justify-center'>
@@ -6,7 +8,12 @@ export default function BottomWarning({label,blabel}:BottomWarningP) {
                     {label}
                 </div>
                 <div className='px-1'>
-                    <button className="underline">{blabel}</button>
+                    <button className="underline"
+                        onClick={()=>{
+                            router.push(link);
+                        }}
+                    
+                    >{blabel}</button>
                 </div>
             </div>
         </div>
@@ -15,5 +22,6 @@ export default function BottomWarning({label,blabel}:BottomWarningP) {
 
 interface BottomWarningP {
     label: string;
-    blabel:string
+    blabel:string,
+    link:string
 }

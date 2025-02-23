@@ -59,7 +59,7 @@ export default function SignUp() {
                     </div>
 
                     <div>
-                        <BottomWarning label={'Already have an Account?'} blabel={'Signin'}/>
+                        <BottomWarning label={'Already have an Account?'} blabel={'Signin'} link={'/auth/signin'}/>
                     </div>
                     <div className='flex justify-center pt-4 pb-1'>
                         <div className='px-2'>
@@ -114,7 +114,6 @@ async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>
 
     } catch (err: any) {
         setErrors({ api: err.response?.data?.message || "Signup failed. Please try again." });
-
     }    
 };
 
