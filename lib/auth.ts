@@ -6,6 +6,18 @@ import { userSignInSchema,UsersSignInType } from "./validation";
 import { prisma } from "@/lib/prisma"
 import {Session} from 'next-auth'
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+
+async function hashPassword(password: string): Promise<string> {
+  console.log(password);
+  const hashedPassword = await bcrypt.hash(password,parseInt(process.env.saltRounds!));
+
+  return hashedPassword;
+}
+export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+  return await bcrypt.compare(password, hashedPassword);
+}
+
 export const authoptions={
     providers: [
             GithubProvider({
@@ -28,12 +40,13 @@ export const authoptions={
               async authorize(credentials:any) {
                 try{
                     const validatedUser = userSignInSchema.safeParse(credentials)
+              
                     if(!validatedUser.success) throw new Error(JSON.stringify(validatedUser.error.format()));
                     const user = await prisma.user.findUnique({
                         where: { email: validatedUser.data.email },
-                    })        
-                    if (!user || user.password !== validatedUser.data.password) return null
-                    return user;      
+                    })      
+                    if(!user || !(await comparePassword(validatedUser.data.password, user.password!))) return null;
+                    return user;     
                 } catch(err) {
                   return null;
                 }
