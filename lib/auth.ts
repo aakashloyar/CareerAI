@@ -5,6 +5,7 @@ import {JWT} from 'next-auth/jwt'
 import { userSignInSchema,UsersSignInType } from "./validation";
 import { prisma } from "@/lib/prisma"
 import {Session} from 'next-auth'
+import { NextResponse } from "next/server";
 export const authoptions={
     providers: [
             GithubProvider({
@@ -31,20 +32,20 @@ export const authoptions={
                     const user = await prisma.user.findUnique({
                         where: { email: validatedUser.data.email },
                     })        
-                    if(!user) throw new Error("User not found");  
+                    if (!user || user.password !== validatedUser.data.password) return null
                     return user;      
                 } catch(err) {
-                    throw new Error(String(err) || "server Error");
+                  return null;
                 }
               }
             })
     ],
     callbacks: {
         async jwt({ token, account }:{token:JWT ;account:any}) {
-            // Persist the OAuth access_token to the token right after signin
-            console.log(token);
-            console.log(account);
+            //console.log(account);
+            //console.log(token);
             if (account) {
+              //console.log('inside');
               token.accessToken = account.access_token
             }
             return token

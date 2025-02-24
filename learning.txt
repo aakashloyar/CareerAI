@@ -1,2 +1,13 @@
 {JSON.stringify(session.data?.user?.name)}
 {session.data?.user?.name}
+
+
+
+
+
+
+
+throw new Error("User not found");  
+return NextResponse.json({ error: "User already exists" }, { status: 400 });
+
+//here ist is not catched by try catch as an error while 2nd will be 
