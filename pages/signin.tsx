@@ -34,13 +34,13 @@ export default function SignIn() {
                 email: email,
                 password:password,
                 callbackUrl: 'http://localhost:3000' ,
-                // redirect:false
+                redirect:false
             });
             if(!result?.ok) {
-                object.api='invalid credentails'
                 seterror(object);
                 return;
             }
+            router.push('/');
         }catch(err:any) {
             console.log(err);
         }

@@ -9,9 +9,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 async function hashPassword(password: string): Promise<string> {
-  console.log(password);
   const hashedPassword = await bcrypt.hash(password,parseInt(process.env.saltRounds!));
-
   return hashedPassword;
 }
 export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
@@ -40,12 +38,12 @@ export const authoptions={
               async authorize(credentials:any) {
                 try{
                     const validatedUser = userSignInSchema.safeParse(credentials)
-              
-                    if(!validatedUser.success) throw new Error(JSON.stringify(validatedUser.error.format()));
+                    if(!validatedUser.success) return null;
                     const user = await prisma.user.findUnique({
                         where: { email: validatedUser.data.email },
                     })      
                     if(!user || !(await comparePassword(validatedUser.data.password, user.password!))) return null;
+                    console.log(user);
                     return user;     
                 } catch(err) {
                   return null;
@@ -54,17 +52,23 @@ export const authoptions={
             })
     ],
     callbacks: {
-        async jwt({ token, account }:{token:JWT ;account:any}) {
-            //console.log(account);
-            //console.log(token);
+        async jwt({ token, account,user }:{token:JWT ;account:any;user:any}) {
+            // console.log('inside jwt');
+            // console.log(user);
+            // console.log(account);
+            // console.log(token);
+            // console.log('outside jwt');
             if (account) {
-              //console.log('inside');
               token.accessToken = account.access_token
             }
             return token
         },
-        async session({ session, token, user }:{session:Session;token:JWT;user:UsersSignInType}) {
-
+        async session({ session, token, user }:{session:Session;token:JWT;user:any}) {
+            // console.log('Inside seesion')
+            // console.log(session);
+            // console.log(token);
+            // console.log(user);
+            // console.log('outsied session');
             return session
         }
     }
