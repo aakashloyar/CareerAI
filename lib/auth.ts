@@ -52,25 +52,47 @@ export const authoptions={
             })
     ],
     callbacks: {
+        async signIn({ user, account }:{user:any,account:any}) {
+            if (account.provider === "google") {
+              const existingUser = await prisma.user.findUnique({
+                where: { email: user.email },
+              });
+      
+              if (!existingUser) {
+                  // Create a new user if they don't exist
+                await prisma.user.create({
+                  data: {
+                    email: user.email,
+                    firstName: user.name?.split(" ")[0] || "",
+                    lastName: user.name?.split(" ")[1] || "",
+                  },
+                });
+              }
+            }
+            return true; // Allow sign-in
+        },
         async jwt({ token, account,user }:{token:JWT ;account:any;user:any}) {
-            // console.log('inside jwt');
-            // console.log(user);
-            // console.log(account);
-            // console.log(token);
-            // console.log('outside jwt');
+            if (user &&user.id==='string') {
+              token.id = user.id;
+            }
             if (account) {
               token.accessToken = account.access_token
             }
             return token
         },
-        async session({ session, token, user }:{session:Session;token:JWT;user:any}) {
-            // console.log('Inside seesion')
-            // console.log(session);
-            // console.log(token);
-            // console.log(user);
-            // console.log('outsied session');
+        async session({ session, token }:{session:SessionProp;token:JWT}) {
+          if (token?.id && typeof token.id==='string') {
+            const user:User|null= (await getUserDetails(token.id));
+            if(user) {
+              session.user.id = token.id;
+              session.user.firstName = user?.firstName || null;
+              session.user.lastName = user?.lastName || null;
+            }
+            
+          }
             return session
         }
+
     }
     ,
     pages:{
@@ -82,3 +104,27 @@ export const authoptions={
 
 
 
+
+async function getUserDetails(userId: string):Promise<User|null> {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email:true,firstName: true, lastName: true ,id:true},
+  });
+}
+
+interface SessionProp {
+  user:User
+}
+interface User {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+};
+
+// interface JWT {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   accessToken:string;
+// }
