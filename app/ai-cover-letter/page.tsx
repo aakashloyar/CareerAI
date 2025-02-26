@@ -1,5 +1,5 @@
 'use client'
-import Button from '@/components/WButton'
+import Button from '@/components/WhiteButton'
 import { useRouter } from "next/navigation";
 
 export default function() {

@@ -5,7 +5,7 @@ import { userSignUpSchema } from "@/lib/validation"; // Import Zod schema
 import Heading from '../components/heading'
 import Button from '../components/button'
 import SubHeading from '../components/subheading'
-import InputBox from '../components/inputbox'
+import InputBox from '../components/Inputbox'
 import BottomWarning from '../components/Bottomwarning'
 import {signIn} from 'next-auth/react'
 import {UsersSignUpType} from '@/lib/validation'
