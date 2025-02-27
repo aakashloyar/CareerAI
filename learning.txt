@@ -15,3 +15,15 @@ return NextResponse.json({ error: "User already exists" }, { status: 400 });
 
 
 *** bcrypt not give same hashcode for same password
+
+
+//why you cannot use header(localstorage) for nextjs
+//next-> ssr -> in first request you cannot send header
+//so next cannot get to know who is sending the request
+//so you have to use cookie that go with every request
+
+
+//but in react it is csr so first request it will go to server then some html
+then some client then some server so local storage work here 
+
+
