@@ -6,6 +6,7 @@ import { userSignInSchema,UsersSignInType } from "./validation";
 import { prisma } from "@/lib/prisma"
 import {Session} from 'next-auth'
 import { NextResponse } from "next/server";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 
 async function hashPassword(password: string): Promise<string> {
@@ -17,6 +18,7 @@ export async function comparePassword(password: string, hashedPassword: string):
 }
 
 export const authoptions={
+    adapter: PrismaAdapter(prisma),
     providers: [
             GithubProvider({
               clientId: process.env.GITHUB_ID||"",
