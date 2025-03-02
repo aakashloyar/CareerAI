@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className='bg-slate-900 min-h-screen text-white '>
        <div className=' flex justify-center pt-32 text-xl text-gray-300 px-52'>
-          {/* {JSON.stringify(session.data?.user?.name)} */}
+          {JSON.stringify(session.data?.user?.name)}
           {JSON.stringify(session.data)}
       </div>
 
