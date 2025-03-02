@@ -26,4 +26,7 @@ return NextResponse.json({ error: "User already exists" }, { status: 400 });
 //but in react it is csr so first request it will go to server then some html
 then some client then some server so local storage work here 
 
-
+//session can be stored in 2 ways 
+//database 
+//browser
+//adapter are only used when you are using database session strategy
