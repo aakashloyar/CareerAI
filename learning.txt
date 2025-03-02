@@ -30,3 +30,4 @@ then some client then some server so local storage work here
 //database 
 //browser
 //adapter are only used when you are using database session strategy
+//adaoter help to add session entry in session table 
