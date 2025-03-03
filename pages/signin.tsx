@@ -36,7 +36,9 @@ export default function SignIn() {
                 callbackUrl: 'http://localhost:3000' ,
                 redirect:false
             });
+            console.log(result);
             if(!result?.ok) {
+                object.api='invalid credentials'
                 seterror(object);
                 return;
             }

@@ -14,11 +14,22 @@ async function hashPassword(password: string): Promise<string> {
   const hashedPassword = await bcrypt.hash(password,parseInt(process.env.saltRounds!));
   return hashedPassword;
 }
-export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
   return await bcrypt.compare(password, hashedPassword);
 }
 
-
+async function getUserDetails(email:string):Promise<User|null> {
+  const user=await prisma.user.findUnique({
+    where:{email},
+    select:{
+      id:true,
+      email:true,
+      firstName:true,
+      lastName:true
+    }
+  })
+  return user;
+}
 const options = {
   providers: [
     GithubProvider({
@@ -55,15 +66,15 @@ const options = {
   ],
   callbacks: {
   async signIn({ user, account }:{user:any,account:any}) {
-      console.log('inside signin***');
-      console.log('user='+JSON.stringify(user));
-      console.log('account='+JSON.stringify(account));
-      console.log('outside signin***')
-      if (account.provider === "google") {
+      // console.log('inside signin***');
+      //console.log('user='+JSON.stringify(user));
+      // console.log('account='+JSON.stringify(account));
+      // console.log('outside signin***')
+      if (account.provider === "google"||account.provider === "github") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
-
+        //console.log(JSON.stringify(existingUser));
         if (!existingUser) {
             // Create a new user if they don't exist
           await prisma.user.create({
@@ -77,35 +88,37 @@ const options = {
       }
       return true; // Allow sign-in
   },
-  async jwt({ token, account,user }:{token:JWT ;account:any;user:any}) {
-      console.log('inside jwt***');
-      console.log('token='+JSON.stringify(token));
-      console.log('user='+JSON.stringify(user));
-      console.log('account='+JSON.stringify(account));
-      console.log('outside jwt***')
-      if (user &&user.id==='string') {
-        token.id = user.id;
+  // async jwt({ token, account,user }:{token:JWT ;account:any;user:User}) {
+  //     // console.log('inside jwt***');
+  //     //console.log('token='+JSON.stringify(token));
+  //     //console.log('user='+JSON.stringify(user));
+  //     // console.log('account='+JSON.stringify(account));
+  //     // console.log('outside jwt***')
+  //     if (user &&typeof user.id==='string') {
+  //       //console.log('****setting******')
+  //       console.log(token.sub)
+  //       token.id = user.id;
+  //     }
+  //     if (account) {
+  //       token.accessToken = account.access_token
+  //     }
+  //     return token
+  // },
+  async session({ session, token }:{session:extendSession;token:JWT}) {
+    if (token?.email && typeof token.email==='string') {
+      const user:User|null= (await getUserDetails(token.email));
+      if(user) {
+        console.log(user)
+        session.user = session.user || {};
+        session.user.firstName=user.firstName;
+        session.user.lastName=user.lastName;
+        token.id=user.id;
       }
-      if (account) {
-        token.accessToken = account.access_token
-      }
-      return token
-  },
-  async session({ session, token }:{session:Session;token:JWT}) {
-    // if (token?.id && typeof token.id==='string') {
-    //   const user:User|null= (await getUserDetails(token.id));
-    //   if(user) {
-    //     session.user = session.user || {}; // Ensure `session.user` exists
-    //     session.user.id = token.id;
-    //     session.user.firstName = user.firstName || null;
-    //     session.user.lastName = user.lastName || null;
-    //   }
-      
-    // }
-    console.log('inside session***')
-    console.log('session= ' +JSON.stringify(session));
-    console.log('token= '+ JSON.stringify(token ));
-    console.log('outside session***');
+    }
+    // console.log('inside session***')
+    // console.log('session= ' +JSON.stringify(session));
+    // console.log('token= '+ JSON.stringify(token ));
+    // console.log('outside session***');
     return session
   }},
 
@@ -118,3 +131,15 @@ const options = {
 }
 
 export default NextAuth(options)
+
+
+interface extendSession extends Session {
+  user?:User
+}
+interface User {
+  firstName?:string|null,
+  lastName?:string|null,
+  name?:string|null,
+  id?:string|null,
+  email?:string|null
+}
