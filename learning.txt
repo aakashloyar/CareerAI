@@ -30,4 +30,10 @@ then some client then some server so local storage work here
 //database 
 //browser
 //adapter are only used when you are using database session strategy
-//adaoter help to add session entry in session table 
+//adapter help to add session entry in session table 
+
+
+//now all the callbacks in next auth
+//signin -> used to block some user
+//jwt -> used to update the payload of jwt token  suck as updating user id
+//session -> store important information about user to show on frontend
