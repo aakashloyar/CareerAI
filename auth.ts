@@ -18,40 +18,40 @@ export async function comparePassword(password: string, hashedPassword: string):
   return await bcrypt.compare(password, hashedPassword);
 }
 
-export const { handlers, signIn, signOut, auth }=NextAuth({
+
+const options = {
   providers: [
-      GithubProvider({
-        clientId: process.env.GITHUB_ID||"",
-        clientSecret: process.env.GITHUB_SECRET||"",
-      }),
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID||"",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET||""
-      }),
-      CredentialsProvider({
-        name: "Credentials",
-      
-        credentials: {
-          firstName: { label: "Username", type: "text", placeholder: "jsmith" },
-          lastName: { label: "Username", type: "text", placeholder: "jsmith" },
-          email: { label: "Username", type: "text", placeholder: "jsmith" },
-          password: { label: "Password", type: "password" }
-        },
-        async authorize(credentials:any) {
-          try{
-              const validatedUser = userSignInSchema.safeParse(credentials)
-              if(!validatedUser.success) return null;
-              const user = await prisma.user.findUnique({
-                  where: { email: validatedUser.data.email },
-              })      
-              if(!user || !(await comparePassword(validatedUser.data.password, user.password!))) return null;
-              console.log(user);
-              return user;     
-          } catch(err) {
-            return null;
-          }
+    GithubProvider({
+      clientId: process.env.GITHUB_ID||"",
+      clientSecret: process.env.GITHUB_SECRET||"",
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID||"",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET||""
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+    
+      credentials: {
+        firstName: { label: "Username", type: "text", placeholder: "jsmith" },
+        lastName: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "Username", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials:any) {
+        try{
+            const validatedUser = userSignInSchema.safeParse(credentials)
+            if(!validatedUser.success) return null;
+            const user = await prisma.user.findUnique({
+                where: { email: validatedUser.data.email },
+            })      
+            if(!user || !(await comparePassword(validatedUser.data.password, user.password!))) return null;
+            return user;     
+        } catch(err) {
+          return null;
         }
-      })
+      }
+    })
   ],
   callbacks: {
   async signIn({ user, account }:{user:any,account:any}) {
@@ -108,37 +108,13 @@ export const { handlers, signIn, signOut, auth }=NextAuth({
     console.log('outside session***');
     return session
   }},
+
+  
+
   pages:{
-  signIn:'/auth/signin'
+    signIn:'/auth/signin'
   },
   secret:process.env.NEXT_AUTH_SECRET
+}
 
-})
-    
-export const { GET, POST } = handlers
-
-
-
-// async function getUserDetails(userId: string):Promise<User|null> {
-//   return await prisma.user.findUnique({
-//     where: { id: userId },
-//     select: { email:true,firstName: true, lastName: true ,id:true},
-//   });
-// }
-
-// interface SessionProp extends DefaultSession {
-//   user?:User
-// }
-// interface User {
-//   id: string;
-//   firstName: string | null;
-//   lastName: string | null;
-//   email: string;
-// };
-
-// // interface JWT {
-// //   id: string;
-// //   firstName: string;
-// //   lastName: string;
-// //   accessToken:string;
-// // }
+export default NextAuth(options)

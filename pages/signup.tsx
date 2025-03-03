@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import { userSignUpSchema } from "@/lib/validation"; // Import Zod schema
 import Heading from '../components/heading'
 import Button from '../components/button'
@@ -11,7 +11,7 @@ import {signIn} from 'next-auth/react'
 import {UsersSignUpType} from '@/lib/validation'
 import {useRouter} from 'next/navigation'
 import axios from 'axios'
-export default function SignUp() {
+export default function SignUp({setSuccess}:{setSuccess:(value:boolean)=>void}) {
     const [firstName,setfirstName]=useState("");
     const [lastName,setlastName]=useState("");
     const [email,setemail]=useState("");
@@ -19,7 +19,7 @@ export default function SignUp() {
     const router=useRouter();
     const [errors, setErrors] = useState<Record<string, string>>({}); // ✅ State for field-specific errors
     const handleClick=()=>{
-        submit({firstName:firstName,lastName:lastName,email:email,password:password},router,setErrors)
+        submit({firstName:firstName,lastName:lastName,email:email,password:password},router,setErrors,setSuccess)
         console.log(errors);
     }
     return (
@@ -27,31 +27,31 @@ export default function SignUp() {
             <div className='flex flex-col justify-center'>
                 <div className='bg-white w-96 rounded-lg'>
                     <div className='text-center pt-8'>
-                       <Heading label={'Sign up'}/>
+                    <Heading label={'Sign up'}/>
                     </div>
                     <div className='p-2 text-center'>
-                       <SubHeading label={'Enter your information to create an account'}/>
+                    <SubHeading label={'Enter your information to create an account'}/>
                     </div>
                     <div className='px-4 py-1'>
-                       <InputBox handleChange={(e)=>{
+                    <InputBox handleChange={(e)=>{
                             setfirstName(e.target.value)
                         }}label={'First Name'} placeholder='John'/>
                         {errors.firstName && <div className="text-red-500 text-sm">{errors.firstName}</div>}
                     </div>
                     <div className='px-4 py-1'>
-                       <InputBox handleChange={(e)=>{
+                    <InputBox handleChange={(e)=>{
                             setlastName(e.target.value)
                         }} label={'Last Name'} placeholder='Doe'/>
                         {errors.lastName && <div className="text-red-500 text-sm">{errors.lastName}</div>}
                     </div>
                     <div className='px-4 py-1'>
-                       <InputBox handleChange={(e)=>{
+                    <InputBox handleChange={(e)=>{
                             setemail(e.target.value)
                         }} label={'Email'} placeholder='xxx@gmail.com'/>
                         {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
                     </div>
                     <div className='px-4 py-1'>
-                       <InputBox handleChange={(e)=>{
+                    <InputBox handleChange={(e)=>{
                             setpassword(e.target.value)
                         }} label={'Password'} placeholder='******'/>
                         {errors.password?<div className="text-red-500 text-sm">{errors.password}</div>:null}
@@ -85,12 +85,15 @@ export default function SignUp() {
                 </div>
             </div>
         </div>
+        
     )
 }
 
 async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>, 
-    setErrors: (errors: Record<string, string>) => void) {
+    setErrors: (errors: Record<string, string>) => void,   setSuccess: (value: boolean) => void // ✅ New state setter
+) {
     setErrors({}); // Clear previous errors
+    setSuccess(false); // Clear previous success message
     const validationResult = userSignUpSchema.safeParse(user);
     if (!validationResult.success) {
         const formattedErrors: Record<string, string> = {};
@@ -113,7 +116,10 @@ async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>
     }
     try {
       const { data } = await axios.post("/api/auth/signup", user);
-      router.push('/');
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/api/auth/signin"); // Redirect after 2 seconds
+      }, 2000);
 
     } catch (err: any) {
         console.log(err);

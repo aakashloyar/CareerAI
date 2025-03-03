@@ -13,6 +13,16 @@ export default {
         foreground: "var(--foreground)",
       },
     },
+    keyframes: {
+      fade: {
+        "0%": { opacity: "1" },
+        "100%": { opacity: "0" }
+      }
+    },
+    animation: {
+      fade: "fade 1.2s linear infinite"
+    }
+
   },
   plugins: [],
 } satisfies Config;
