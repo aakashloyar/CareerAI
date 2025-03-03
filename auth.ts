@@ -5,15 +5,9 @@ import {JWT} from 'next-auth/jwt'
 import { userSignInSchema,UsersSignInType } from "./lib/validation";
 import { prisma } from "@/lib/prisma"
 import {Session} from 'next-auth'
-import { NextResponse } from "next/server";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth from "next-auth"
 
-async function hashPassword(password: string): Promise<string> {
-  const hashedPassword = await bcrypt.hash(password,parseInt(process.env.saltRounds!));
-  return hashedPassword;
-}
 async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
   return await bcrypt.compare(password, hashedPassword);
 }
@@ -66,17 +60,11 @@ const options = {
   ],
   callbacks: {
   async signIn({ user, account }:{user:any,account:any}) {
-      // console.log('inside signin***');
-      //console.log('user='+JSON.stringify(user));
-      // console.log('account='+JSON.stringify(account));
-      // console.log('outside signin***')
       if (account.provider === "google"||account.provider === "github") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
-        //console.log(JSON.stringify(existingUser));
         if (!existingUser) {
-            // Create a new user if they don't exist
           await prisma.user.create({
             data: {
               email: user.email,
@@ -86,24 +74,8 @@ const options = {
           });
         }
       }
-      return true; // Allow sign-in
+      return true;
   },
-  // async jwt({ token, account,user }:{token:JWT ;account:any;user:User}) {
-  //     // console.log('inside jwt***');
-  //     //console.log('token='+JSON.stringify(token));
-  //     //console.log('user='+JSON.stringify(user));
-  //     // console.log('account='+JSON.stringify(account));
-  //     // console.log('outside jwt***')
-  //     if (user &&typeof user.id==='string') {
-  //       //console.log('****setting******')
-  //       console.log(token.sub)
-  //       token.id = user.id;
-  //     }
-  //     if (account) {
-  //       token.accessToken = account.access_token
-  //     }
-  //     return token
-  // },
   async session({ session, token }:{session:extendSession;token:JWT}) {
     if (token?.email && typeof token.email==='string') {
       const user:User|null= (await getUserDetails(token.email));
@@ -115,10 +87,6 @@ const options = {
         token.id=user.id;
       }
     }
-    // console.log('inside session***')
-    // console.log('session= ' +JSON.stringify(session));
-    // console.log('token= '+ JSON.stringify(token ));
-    // console.log('outside session***');
     return session
   }},
 
