@@ -37,3 +37,12 @@ then some client then some server so local storage work here
 //signin -> used to block some user
 //jwt -> used to update the payload of jwt token  suck as updating user id
 //session -> store important information about user to show on frontend
+
+
+
+//3 folders
+//action lib config folder which files these store
+
+//action-> store whatever database requests
+//lib -> database helpers like prismaclient password hashcode hash 
+//give all the configurations like types and everything
