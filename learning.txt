@@ -45,7 +45,11 @@ then some client then some server so local storage work here
 
 //action-> store whatever database requests
 //lib -> database helpers like prismaclient password hashcode hash 
-//config->give all the configurations like types and everything
+//config(static files)->give all the configurations like types and everything or also env variables
 
 @@unique([email, sessionId]) // Ensure email + sessionId pair is unique
 this line ensure no duplicate entry in table 
+
+
+//serialize from cookie help in sending request in the formatted manner
+// it is like prisma for req to cookie
