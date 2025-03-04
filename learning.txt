@@ -2,11 +2,6 @@
 {session.data?.user?.name}
 
 
-
-
-
-
-
 throw new Error("User not found");  
 return NextResponse.json({ error: "User already exists" }, { status: 400 });
 

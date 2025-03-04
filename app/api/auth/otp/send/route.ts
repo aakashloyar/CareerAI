@@ -7,20 +7,16 @@ import transporter from '@/lib/nodemailer';
 
 export async function POST(req: NextRequest) {
     try {
-        console.log('1')
-        const { email } = await req.json(); // Parse JSON body
+        const { email } = await req.json();
         const user = await prisma.user.findUnique({
             where: { email }
         });
-        console.log('2')
         if (!user) {
             return Response.json({ message: "User does not exist. Create an account first." }, { status: 400 });
         }
-        console.log('3')
         if (user.emailVerified) {
             return Response.json({ message: "User already verified. Please sign in." }, { status: 300 });
         }
-        console.log('4')
         const otp = crypto.randomInt(100000, 999999).toString();
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // OTP valid for 5 minutes
         const sessionId = uuidv4();
@@ -38,7 +34,6 @@ export async function POST(req: NextRequest) {
             maxAge: 5 * 60, // Cookie valid for 5 minutes
             path: '/',
         });
-        // Send OTP email
         await transporter.sendMail({
             from: process.env.app_email,
             to: email,
@@ -46,7 +41,6 @@ export async function POST(req: NextRequest) {
             text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
             html: `<p>Your OTP is <b>${otp}</b>. It will expire in 5 minutes.</p>`
         });
-        console.log('8')
         return new Response(JSON.stringify({ message: "OTP sent successfully" }), {
             status: 200,
             headers: { 'Set-Cookie': cookie, 'Content-Type': 'application/json' },
