@@ -59,3 +59,7 @@ user User @relation("UserOtps", fields: [mail], references: [email], onDelete: C
 //user-> referecing table 
 //otp-> referencing table
 //referencial integrity
+
+
+//flex-wrap -> more than one component in a row and window size increase
+//so they will shift to next row
