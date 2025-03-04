@@ -14,7 +14,7 @@ export default function() {
                 <BackLink label={'Back to cover-letters'} handleClick={backClick}/>
                </div>
                
-               <div className='text-5xl font-bold pt-3'>
+               <div className='text-2xl md:text-5xl font-bold pt-3'>
                  Create Cover Letters
                </div>
                <div className='text-sm pt-1'>
