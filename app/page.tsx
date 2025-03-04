@@ -13,27 +13,27 @@ export default function Home() {
           {JSON.stringify(session.data)}
       </div>
 
-      <div className='flex justify-center pt-32 text-7xl font-bold text-gray-300 px-52'>
+      <div className='flex justify-center pt-32 text-7xl font-bold text-gray-300 px-2'>
         Your AI Career Coach for
       </div>
-      <div className='flex justify-center text-6xl font-bold text-gray-300 px-52'>
+      <div className='flex justify-center text-6xl font-bold text-gray-300 px-2'>
         Professional Success
       </div>
 
-      <div className='flex justify-center pt-6 text-2xl text-gray-500 px-52'>
+      <div className='flex justify-center pt-6 text-2xl text-gray-500 px-2'>
         Advance your career with personalized guidance, interview
       </div>
-      <div className='flex justify-center text-2xl text-gray-500 px-52'>
+      <div className='flex justify-center text-2xl text-gray-500 px-2'>
         prep, and AI-powered tools for job success.
       </div>
-      <div className='flex justify-center pt-32 px-44'>
+      <div className='flex justify-center pt-32 px-2 md:px-16 lg:px-32'>
         <img src="/hompgimg.png" className='w-full' alt="Carrer Image" />
       </div>
 
       <div className='flex justify-center pt-32 text-3xl font-bold text-gray-100 px-52'>
         Powerful feature for your carrer growth
       </div>
-      <div className='flex justify-center pt-8'>
+      <div className='flex flex-wrap justify-center pt-8'>
         <div className='px-3'>
           <Card heading={'AI-Powered Career Guidance'} subheading={'Get personalized career advice and insights powered by advanced AI technology.'} imglink={'/img1.png'}/>
         </div>
@@ -52,7 +52,7 @@ export default function Home() {
           Four simple steps to accelerate your career growth
         </div>
 
-        <div className='flex justify-center pt-8'>
+        <div className='flex flex-wrap justify-center pt-8'>
           <div className='px-3'>
             <UnCard heading={'Professional Onboarding'} subheading={'Share your industry and expertise for personalized guidance'} imglink={'/img4.png'}/>
           </div>

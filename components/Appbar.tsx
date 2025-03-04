@@ -10,7 +10,7 @@ export default function AppBar(){
           <div className='col-span-2 flex items-center justify-center'>
             <Link href="/">
             <button className="">
-              <div className='text-2xl font-bold '>
+              <div className='text-md md:text-2xl font-bold '>
                 CarrerAI
               </div>
             </button>
@@ -23,7 +23,7 @@ export default function AppBar(){
           </div>
           <div className='col-span-4 flex justify-center'>
           <div>
-            <Button handleClick={() => signIn()} label={'Sign In'}/>
+            <Button handleClick={() => signIn()} label={'SignIn'}/>
             </div>
             <div>
             <Button handleClick={() => signOut()} label={'SignOut'}/>  
