@@ -53,3 +53,14 @@ this line ensure no duplicate entry in table
 
 //serialize from cookie help in sending request in the formatted manner
 // it is like prisma for req to cookie
+
+@@index[email]
+//apply index at email for fast query (implemented with B-tress or hashing)
+
+otps  Otp[]   @relation("UserOtps")
+user User @relation("UserOtps", fields: [mail], references: [email], onDelete: Cascade)
+//-> now here to we need to understand about it
+//otp table has => mail as foreign key that references email of table user
+//user-> referecing table 
+//otp-> referencing table
+//referencial integrity
