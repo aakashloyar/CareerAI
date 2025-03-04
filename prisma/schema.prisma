@@ -27,6 +27,14 @@ model User {
 }
 
 
+model OTP {
+  id        String   @id @default(uuid())
+  email     String
+  sessionId String   @unique
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
-
+  @@unique([email, sessionId]) // Ensure email + sessionId pair is unique
+}
 
