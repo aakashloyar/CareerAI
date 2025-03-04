@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,19 +7,16 @@ datasource db {
   url      = env("NEON_URL")
 }
 
-
-
 model User {
-  id            String    @id @default(uuid())   // Unique ID for each user
-  email         String    @unique                 // Email is the unique identifier
-  firstName     String?   // First name (optional)
-  lastName      String?   // Last name (optional)
-  password      String?   // Password (nullable for OAuth users)
-  emailVerified Boolean   @default(false)         // Whether the email is verified
-  profileImage  String?   // Profile picture URL (optional)
-  lastLogin     DateTime? // Timestamp of last login (optional)
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String?
+  emailVerified Boolean   @default(false)
+  profileImage  String?
+  lastLogin     DateTime?
+  firstName     String?
+  lastName      String?
 }
-
 
 model Otp {
   id        String   @id @default(uuid())
@@ -35,6 +26,5 @@ model Otp {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@unique([email, sessionId]) // Ensure email + sessionId pair is unique
+  @@unique([email, sessionId])
 }
-
