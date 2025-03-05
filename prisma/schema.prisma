@@ -17,7 +17,7 @@ model User {
   firstName     String?
   lastName      String?
   otps          Otp[]     @relation("UserOtps")
-
+  coverletters  Coverletter[]     @relation("CoverLetters")
   @@index([email])
 }
 
@@ -32,4 +32,19 @@ model Otp {
 
   @@unique([email, sessionId])
   @@index([email, sessionId])
+}
+
+model Coverletter {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation("CoverLetters",fields: [userId], references: [id],onDelete: Cascade)
+  content         String    // Markdown content
+  jobDescription  String
+  companyName     String    // Name of the company applying to
+  jobTitle        String    // Position applying for
+  status          String    @default("draft") // draft, completed
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
 }
