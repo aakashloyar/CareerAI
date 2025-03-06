@@ -13,5 +13,13 @@ export const userSignInSchema = z.object({
 })
 
 
+export const coverLetterSchema = z.object({
+  companyName: z.string().min(2,"Company Name must be at least 2 characters"),
+  jobTitle: z.string().min(2, "Password must be at least 2 characters"),
+  jobDescription:z.string().min(10,"Job Description must be at least 10 characters")
+})
+
+
 export type UsersSignUpType = z.infer<typeof userSignUpSchema>;
 export type UsersSignInType = z.infer<typeof userSignInSchema>;
+export type coverLetterType=z.infer<typeof coverLetterSchema>;
