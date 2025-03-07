@@ -24,7 +24,7 @@ async function getUserDetails(email:string):Promise<User|null> {
   })
   return user;
 }
-const options = {
+export const options = {
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID||"",
@@ -61,12 +61,10 @@ const options = {
   callbacks: {
   async signIn({ user, account }:{user:any,account:any}) {
       if (account.provider === "google"||account.provider === "github") {
-        console.log("****1github****")
         console.log(user);
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
-        console.log("****2github****")
         if (!existingUser) {
           await prisma.user.create({
             data: {
@@ -76,7 +74,6 @@ const options = {
             },
           });
         }
-        console.log("****3github****")
       }
       return true;
   },
@@ -103,7 +100,6 @@ const options = {
 }
 
 export default NextAuth(options)
-
 
 interface extendSession extends Session {
   user?:User
