@@ -16,7 +16,10 @@ export const userSignInSchema = z.object({
 export const coverLetterSchema = z.object({
   companyName: z.string().min(2,"Company Name must be at least 2 characters"),
   jobTitle: z.string().min(2, "Password must be at least 2 characters"),
-  jobDescription:z.string().min(10,"Job Description must be at least 10 characters")
+  jobDescription:z.string().min(10,"Job Description must be at least 10 characters"),
+  experience:z.number(),
+  skills:z.string(),
+  bio:z.string(),
 })
 
 
