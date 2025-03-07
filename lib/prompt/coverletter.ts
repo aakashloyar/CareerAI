@@ -1,15 +1,14 @@
-
-function coverPrompt(user:cover) {
+import { coverLetterType } from "../validation";
+function coverPrompt(data:coverLetterType) {
     const prompt = `
 
-        Write a professional cover letter for a ${input.jobTitle} position at 
+        Write a professional cover letter for a ${data.jobTitle} position at 
         ${data.companyName}.
         
         About the candidate:
-        - Industry: ${user.industry}
-        - Years of Experience: ${user.experience}
-        - Skills: ${user.skills?.join(", ")}
-        - Professional Background: ${user.bio}
+        - Years of Experience: ${data.experience}
+        - Skills: ${data.skills}
+        - Professional Background: ${data.bio}
         
         Job Description:
         ${data.jobDescription}
@@ -27,7 +26,3 @@ function coverPrompt(user:cover) {
     `;
 }
 
-interface cover{
-    jobTitle:string,
-
-}
