@@ -1,5 +1,5 @@
 import { coverLetterType } from "../validation";
-function coverPrompt(data:coverLetterType) {
+export default function coverPrompt(data:coverLetterType) {
     const prompt = `
 
         Write a professional cover letter for a ${data.jobTitle} position at 
@@ -24,5 +24,6 @@ function coverPrompt(data:coverLetterType) {
         
         Format the letter in markdown.
     `;
+    return prompt;
 }
 
