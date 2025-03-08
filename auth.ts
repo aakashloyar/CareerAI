@@ -86,6 +86,7 @@ export const options = {
         session.user.firstName=user.firstName;
         session.user.lastName=user.lastName;
         token.id=user.id;
+        session.user.id=user.id;
       }
     }
     return session
