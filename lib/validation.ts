@@ -19,6 +19,7 @@ export const coverLetterSchema = z.object({
   jobDescription:z.string(),
   experience:z.string(),
   skills:z.string(),
+  name:z.string().min(3,"Cover Letter Name must be at least 3 characters")
 })
 
 

@@ -11,7 +11,8 @@ export default function() {
         jobTitle: "SDE",
         jobDescription: "Nice",
         experience:"sde at zomato from jan 2024 to jan 2025",
-        skills:"Java, Next.js"
+        skills:"Java, Next.js",
+        name:"resume1"
     });
     const [errors, setErrors] = useState<Record<string, string>>({}); // ✅ State for field-specific errors
 
@@ -28,7 +29,8 @@ export default function() {
                 companyName: formatted.companyName?._errors?.[0] || "", // ✅ Ensure safe access
                 jobTitle: formatted.jobTitle?._errors?.[0] || "",
                 jobDescription: formatted.jobDescription?._errors?.[0] || "",
-                experience: formatted.experience?._errors?.[0] || ""
+                experience: formatted.experience?._errors?.[0] || "",
+                name: formatted.name?._errors?.[0] || ""
             }));
             return;
         }
@@ -73,7 +75,7 @@ export default function() {
 
             </div>
             <div className='flex justify-between  text-slate-900 pt-2'>
-                <div className='flex justify-between flex-wrap w-1/2 pr-4'>
+                <div className='w-1/2 pr-4'>
                    <InputBox handleChange={(e)=>{
                         setDetails((prev) => ({ ...prev, experience: e.target.value }));
                     }} label={'Experience'} placeholder='sde at xyz from jan-2023 to jan-2024'/>
@@ -95,8 +97,13 @@ export default function() {
                     {errors.jobDescription && <div className="text-red-500 text-sm">{errors.jobDescription}</div>}
 
             </div>
-            <div className='flex justify-end pt-6'>
-                <div>
+            <div className='flex justify-between pt-6 flex-wrap item-center'>
+                <div className=''>
+                   <InputBox handleChange={(e)=>{
+                        setDetails((prev) => ({ ...prev, name: e.target.value }));
+                    }} label={'Cover Letter Name'} placeholder='Unique name'/>
+                </div>
+                <div className=''>
                     <Button label={'Generate New Cover Letter'} handleClick={handleClick}/>
                     {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>}
                 </div>

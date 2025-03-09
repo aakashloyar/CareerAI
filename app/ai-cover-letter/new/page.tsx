@@ -18,7 +18,7 @@ export default function() {
                  Create Cover Letters
                </div>
                <div className='text-sm pt-1'>
-               Generate a tailored cover letter for your job application
+                 Generate a tailored cover letter for your job application
                </div>
                <div className='flex flex-center pt-8 px-8'>
                 <Form/>

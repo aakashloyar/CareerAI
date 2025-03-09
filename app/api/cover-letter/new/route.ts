@@ -11,6 +11,7 @@ export async function POST(req:NextRequest) {
         console.log(session)
         console.log(1);
         if(!session ||!session.user||!session.user.id) return NextResponse.json({error:"login first"},{status:400});
+       
         console.log(2);
         const body = await req.json();
         console.log(3);
@@ -22,6 +23,10 @@ export async function POST(req:NextRequest) {
         }
         console.log(5);
         const data=validated.data;
+        const present=await prisma.coverletter.findFirst({
+            where:{userId:session.user.id,name:data.name}
+        })
+        if(present) return NextResponse.json({error:'Cover Letter name must be unique'},{status:400}) 
         const prompt=coverPrompt(data,session.user);
         console.log(6);
         const res=await model.generateContent(prompt);
@@ -30,6 +35,7 @@ export async function POST(req:NextRequest) {
         console.log(7);
         const coverLetter = await prisma.coverletter.create({
             data: {
+              name:data.name,
               content,
               jobDescription: data.jobDescription,
               companyName: data.companyName,
@@ -45,6 +51,4 @@ export async function POST(req:NextRequest) {
     } catch(err) {
         return Response.json({error:"internal server error"},{status:500})
     }
-    
-
 }
