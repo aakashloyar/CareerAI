@@ -63,3 +63,8 @@ user User @relation("UserOtps", fields: [mail], references: [email], onDelete: C
 
 //flex-wrap -> more than one component in a row and window size increase
 //so they will shift to next row
+
+
+
+//horizontal and vertical scaling
+//
