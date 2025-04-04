@@ -97,6 +97,7 @@ export const options = {
   pages:{
     signIn:'/auth/signin'
   },
+  
   secret:process.env.NEXT_AUTH_SECRET
 }
 
