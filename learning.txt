@@ -67,4 +67,4 @@ user User @relation("UserOtps", fields: [mail], references: [email], onDelete: C
 
 
 //horizontal and vertical scaling
-//
+//hi

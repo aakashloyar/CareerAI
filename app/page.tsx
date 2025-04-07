@@ -4,6 +4,7 @@ import Image from "next/image";
 import Card from '@/components/card'
 import UnCard from '@/components/uncard'
 import { useSession } from "next-auth/react";
+
 export default function Home() {
   const session = useSession();
   return (
@@ -26,8 +27,8 @@ export default function Home() {
       <div className='flex justify-center text-2xl text-gray-500 px-2'>
         prep, and AI-powered tools for job success.
       </div>
-      <div className='flex justify-center pt-32 px-2 md:px-16 lg:px-32'>
-        <img src="/hompgimg.png" className='w-full' alt="Carrer Image" />
+      <div className="flex justify-center px-2">
+        <Image src="/hompgimg.png" width={1600} height={800} alt="home page image"/>
       </div>
 
       <div className='flex justify-center pt-32 text-3xl font-bold text-gray-100 px-52'>
