@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation';
-import Coverletterform from '@/components/coverletter/form'
+import Coverletterform from '@/app/ai-cover-letter/_components/form'
 import {Button} from '@/components/ui/button'
 export default function() {
     const router=useRouter()

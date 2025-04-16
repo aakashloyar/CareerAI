@@ -1,9 +1,9 @@
-import CoverletterItem from '@/components/coverletter/list'
+import CoverletterItem from '@/app/ai-cover-letter/_components/list'
 import { coverLetterType } from '@/lib/validation';
 import {prisma} from '@/lib/prisma'
-import {options} from '@/auth'
 import { getServerSession } from "next-auth";
-import Clientpart from "./clientpart"
+import Clientpart from "./_components/clientpart"
+import {options} from '@/auth'
 export  default async function() {
     const session=await getServerSession(options);
     type cllisttype=Omit<coverLetterType,'jobDescription'|'experience'|'skills'> &{id:string} &{createdAt:Date};
@@ -46,7 +46,7 @@ export  default async function() {
             <div className='p-1'>
                 {cllist.map((cl)=>(
                     <div key={cl.id} className='p-2'>
-                        <CoverletterItem name={cl.name} company={cl.companyName} title={cl.jobTitle} createdOn={cl.createdAt} />
+                        <CoverletterItem id={cl.id} name={cl.name} company={cl.companyName} title={cl.jobTitle} createdOn={cl.createdAt} />
                     </div>
                 ))}
             </div>
