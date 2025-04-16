@@ -3,15 +3,22 @@
 import Image from "next/image";
 import Card from '@/components/card'
 import UnCard from '@/components/uncard'
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
-  const session = useSession();
+  const { data: session, status } = useSession();
+  if(status==='loading') {
+    return <p>Loading session...</p>;
+  }
+  if(!session) {
+    return <p>You are not signed in.</p>;
+  }
+
   return (
     <div className='bg-slate-900 min-h-screen text-white '>
        <div className=' flex justify-center pt-32 text-xl text-gray-300 px-52'>
-          {JSON.stringify(session.data?.user?.name)}
-          {JSON.stringify(session.data)}
+          {/* {JSON.stringify(session?.user?.name)} */}
+          {JSON.stringify(session)}
       </div>
 
       <div className='flex justify-center pt-32 text-7xl font-bold text-gray-300 px-2'>
