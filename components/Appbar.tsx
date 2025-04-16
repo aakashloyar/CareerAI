@@ -1,6 +1,7 @@
 "use client"
 import {signIn,signOut} from 'next-auth/react'
 import Button from '@/components/button'
+import Dropdown from "@/app/_components/dropdown"
 import Link from "next/link";
 
 export default function AppBar(){
@@ -22,12 +23,13 @@ export default function AppBar(){
   
           </div>
           <div className='col-span-4 flex justify-center'>
-          <div>
-            <Button handleClick={() => signIn()} label={'SignIn'}/>
+            {/* <div>
+              <Button handleClick={() => signIn()} label={'SignIn'}/>
             </div>
             <div>
-            <Button handleClick={() => signOut()} label={'SignOut'}/>  
-            </div>
+              <Button handleClick={() => signOut()} label={'SignOut'}/>  
+            </div> */}
+            <Dropdown/>
           </div>
         </div>
       </div>
