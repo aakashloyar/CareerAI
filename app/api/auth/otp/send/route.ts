@@ -7,16 +7,20 @@ import transporter from '@/lib/nodemailer';
 
 export async function POST(req: NextRequest) {
     try {
+        console.log("1******");
         const { email } = await req.json();
+        console.log(2);
         const user = await prisma.user.findUnique({
             where: { email }
         });
+        console.log(3);
         if (!user) {
             return Response.json({ message: "User does not exist. Create an account first." }, { status: 400 });
         }
         if (user.emailVerified) {
             return Response.json({ message: "User already verified. Please sign in." }, { status: 300 });
         }
+        console.log(4);
         const otp = crypto.randomInt(100000, 999999).toString();
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // OTP valid for 5 minutes
         const sessionId = uuidv4();
