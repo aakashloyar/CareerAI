@@ -118,7 +118,7 @@ async function submit(user: UsersSignUpType,router: ReturnType<typeof useRouter>
       const { data } = await axios.post("/api/auth/signup", user);
       setSuccess(true);
       setTimeout(() => {
-        router.push("/api/auth/signin"); // Redirect after 2 seconds
+        router.push("/api/auth/signin"); 
       }, 2000);
 
     } catch (err: any) {
