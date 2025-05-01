@@ -18,6 +18,7 @@ model User {
   lastName      String?
   otps          Otp[]     @relation("UserOtps")
   coverletters  Coverletter[]     @relation("CoverLetters")
+  quizs         Quiz[]     @relation("Quizs")
   @@index([email])
 }
 
@@ -48,4 +49,25 @@ model Coverletter {
   updatedAt       DateTime  @updatedAt
 
   @@index([userId])
+}
+
+model Quiz {
+  id              String    @id @default(uuid())
+  userId          String  
+  user            User      @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
+  name            String
+  topic           String
+  count           Int
+  questions       Questions[]     @relation("Questions")
+  @@index([userId])
+}
+
+model Questions {
+  id              String    @id @default(uuid())
+  quizId          String  
+  quiz            Quiz      @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
+  question        String
+  options         String[]
+  correctOption   String
+  @@index([quizId])
 }
