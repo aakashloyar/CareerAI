@@ -23,6 +23,13 @@ export const coverLetterSchema = z.object({
 })
 
 
+export const quizSchema = z.object({
+  quizName:z.string().min(2,"quiz name must be at least 2 characters"),
+  topic:z.string().min(4,"Topic name must be at least 2 characters"),
+  count:z.number().gte(5,"Number of question must be greater than 5"),
+})
+
 export type UsersSignUpType = z.infer<typeof userSignUpSchema>;
 export type UsersSignInType = z.infer<typeof userSignInSchema>;
 export type coverLetterType=z.infer<typeof coverLetterSchema>;
+export type quizType=z.infer<typeof quizSchema>;
