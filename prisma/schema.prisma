@@ -19,6 +19,7 @@ model User {
   otps          Otp[]     @relation("UserOtps")
   coverletters  Coverletter[]     @relation("CoverLetters")
   quizs         Quiz[]     @relation("Quizs")
+  submissions   Submission[]     @relation("Submissions")
   @@index([email])
 }
 
@@ -55,11 +56,13 @@ model Quiz {
   id              String    @id @default(uuid())
   userId          String  
   user            User      @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
-  name            String
+  name            String    
   topic           String
   count           Int
+  createdAt       DateTime  @default(now())
   questions       Questions[]     @relation("Questions")
   @@index([userId])
+  @@index([name])
 }
 
 model Questions {
@@ -70,4 +73,26 @@ model Questions {
   options         String[]
   correctOption   String
   @@index([quizId])
+}
+
+
+model Submission {
+  id              String    @id @default(uuid())
+  userId          String  
+  user            User      @relation("Submissions",fields: [userId], references: [id],onDelete: Cascade)         
+  name            String    
+  topic           String
+  count           Int
+  createdAt       DateTime  @default(now())
+  response        Response[]     @relation("Response")
+  @@index([userId])
+  @@index([name])
+}
+model Response {
+  id              String    @id @default(uuid())
+  submissionId    String
+  user            Submission      @relation("Response",fields: [submissionId], references: [id],onDelete: Cascade)         
+  questionId      String
+  selection       String 
+  @@index([submissionId])
 }
