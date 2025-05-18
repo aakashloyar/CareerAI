@@ -61,6 +61,7 @@ model Quiz {
   count           Int
   createdAt       DateTime  @default(now())
   questions       Questions[]     @relation("Questions")
+  submissions     Submission[]     @relation("SubQuiz")
   @@index([userId])
   @@index([name])
 }
@@ -72,6 +73,7 @@ model Questions {
   question        String
   options         String[]
   correctOption   String
+  response        Response[]     @relation("ResQue")
   @@index([quizId])
 }
 
@@ -79,20 +81,19 @@ model Questions {
 model Submission {
   id              String    @id @default(uuid())
   userId          String  
+  quizId          String
+  quiz            Quiz      @relation("SubQuiz",fields: [quizId], references: [id],onDelete: Cascade)        
   user            User      @relation("Submissions",fields: [userId], references: [id],onDelete: Cascade)         
-  name            String    
-  topic           String
-  count           Int
   createdAt       DateTime  @default(now())
   response        Response[]     @relation("Response")
   @@index([userId])
-  @@index([name])
 }
 model Response {
   id              String    @id @default(uuid())
   submissionId    String
-  user            Submission      @relation("Response",fields: [submissionId], references: [id],onDelete: Cascade)         
-  questionId      String
+  submission      Submission      @relation("Response",fields: [submissionId], references: [id],onDelete: Cascade)         
+  questionId      String   
+  quiz            Questions      @relation("ResQue",fields: [questionId], references: [id],onDelete: Cascade)         
   selection       String 
   @@index([submissionId])
 }
