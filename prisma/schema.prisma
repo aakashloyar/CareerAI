@@ -8,94 +8,99 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            String           @id @default(uuid())
+  email         String           @unique
   password      String?
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean          @default(false)
   profileImage  String?
   lastLogin     DateTime?
   firstName     String?
   lastName      String?
-  otps          Otp[]     @relation("UserOtps")
-  coverletters  Coverletter[]     @relation("CoverLetters")
-  quizs         Quiz[]     @relation("Quizs")
-  submissions   Submission[]     @relation("Submissions")
+  otps          Otp[]            @relation("UserOtps")
+  coverletters  Coverletter[]    @relation("CoverLetters")
+  quizs         Quiz[]           @relation("Quizs")
   @@index([email])
 }
 
 model Otp {
-  id        String   @id @default(uuid())
+  id        String               @id @default(uuid())
   email     String
-  sessionId String   @unique
+  sessionId String               @unique
   otp       String
+  user      User                 @relation("UserOtps", fields: [email], references: [email], onDelete: Cascade)
+  createdAt DateTime             @default(now())
   expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation("UserOtps", fields: [email], references: [email], onDelete: Cascade)
-
   @@unique([email, sessionId])
   @@index([email, sessionId])
 }
 
 model Coverletter {
-  id              String    @id @default(cuid())
+  id              String         @id @default(cuid())
   userId          String
-  user            User      @relation("CoverLetters",fields: [userId], references: [id],onDelete: Cascade)
-  name            String    @default("Default Name") 
-  content         String    // Markdown content
+  name            String         @default("Default Name") 
+  content         String  
   jobDescription  String
-  companyName     String    // Name of the company applying to
-  jobTitle        String    // Position applying for
-  status          String    @default("draft") // draft, completed
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
+  companyName     String  
+  jobTitle        String    
+  status          String         @default("draft") 
+  user            User           @relation("CoverLetters",fields: [userId], references: [id],onDelete: Cascade)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   @@index([userId])
 }
 
 model Quiz {
-  id              String    @id @default(uuid())
+  id              String         @id @default(uuid())
   userId          String  
-  user            User      @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
   name            String    
   topic           String
   count           Int
-  createdAt       DateTime  @default(now())
-  questions       Questions[]     @relation("Questions")
-  submissions     Submission[]     @relation("SubQuiz")
+  user            User           @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
+  questions       Question[]     @relation("Questions")
+  submissions     Submission[]   @relation("Submissions")
+  createdAt       DateTime       @default(now())
   @@index([userId])
   @@index([name])
 }
 
-model Questions {
-  id              String    @id @default(uuid())
+model Question {
+  id              String         @id @default(uuid())
   quizId          String  
-  quiz            Quiz      @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
-  question        String
-  correctOption   String
-  response        Response[]     @relation("ResQue")
+  value           String
+  quiz            Quiz           @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
+  options         Option[]       @relation("Options")
   @@index([quizId])
 }
-
-
+model Answer {
+  id              String         @id  @default(uuid())
+  questionId      String
+  optionId        String
+}
+model Option {
+  id              String         @id @default(uuid())
+  questionId      String  
+  value           String
+  question        Question       @relation("Options",fields: [questionId], references: [id],onDelete: Cascade)         
+}
 model Submission {
-  id              String    @id @default(uuid())
+  id              String         @id @default(uuid())
   userId          String  
   quizId          String
   percentage      String
-  quiz            Quiz      @relation("SubQuiz",fields: [quizId], references: [id],onDelete: Cascade)        
-  user            User      @relation("Submissions",fields: [userId], references: [id],onDelete: Cascade)         
-  createdAt       DateTime  @default(now())
+  quiz            Quiz           @relation("Submissions",fields: [quizId], references: [id],onDelete: Cascade)        
+  response        Response[]     @relation("Responses")
+  createdAt       DateTime       @default(now())
   sumbittedAt     DateTime?  
-  response        Response[]     @relation("Response")
   @@index([userId])
 }
 model Response {
-  id              String    @id @default(uuid())
+  id              String         @id @default(uuid())
   submissionId    String
-  submission      Submission      @relation("Response",fields: [submissionId], references: [id],onDelete: Cascade)         
   questionId      String   
-  quiz            Questions      @relation("ResQue",fields: [questionId], references: [id],onDelete: Cascade)         
   selection       String
   verdict         Boolean 
+  submission      Submission     @relation("Responses",fields: [submissionId], references: [id],onDelete: Cascade)         
   @@index([submissionId])
 }
+
+
