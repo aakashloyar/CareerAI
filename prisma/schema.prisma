@@ -53,7 +53,7 @@ model Quiz {
   id              String         @id @default(uuid())
   userId          String  
   name            String    
-  topic           String
+  topic           String[]
   count           Int
   user            User           @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
   questions       Question[]     @relation("Questions")
@@ -64,43 +64,55 @@ model Quiz {
 }
 
 model Question {
-  id              String         @id @default(uuid())
-  quizId          String  
-  value           String
-  quiz            Quiz           @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
-  options         Option[]       @relation("Options")
+  id        String                @id @default(uuid())
+  quizId    String
+  value     String
+  type      QuestionType          @default(single)
+  quiz      Quiz                  @relation("Questions", fields: [quizId], references: [id], onDelete: Cascade)
+  queOpt    QueOpt[]
   @@index([quizId])
 }
-model Answer {
-  id              String         @id  @default(uuid())
-  questionId      String
-  optionId        String
-}
+
 model Option {
-  id              String         @id @default(uuid())
-  questionId      String  
-  value           String
-  question        Question       @relation("Options",fields: [questionId], references: [id],onDelete: Cascade)         
+  id        String                @id @default(uuid())
+  value     String
+  queOpt    QueOpt[]  
 }
+
+model QueOpt {
+  questionId String
+  optionId   String
+  isCorrect  Boolean               @default(false)  
+
+  question   Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option     Option                @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, optionId]) 
+}
+
 model Submission {
-  id              String         @id @default(uuid())
+  id              String           @id @default(uuid())
   userId          String  
   quizId          String
   percentage      String
-  quiz            Quiz           @relation("Submissions",fields: [quizId], references: [id],onDelete: Cascade)        
-  response        Response[]     @relation("Responses")
-  createdAt       DateTime       @default(now())
+  quiz            Quiz             @relation("Submissions",fields: [quizId], references: [id],onDelete: Cascade)        
+  response        Response[]       @relation("Responses")
+  createdAt       DateTime         @default(now())
   sumbittedAt     DateTime?  
   @@index([userId])
 }
 model Response {
-  id              String         @id @default(uuid())
+  id              String           @id @default(uuid())
   submissionId    String
   questionId      String   
   selection       String
   verdict         Boolean 
-  submission      Submission     @relation("Responses",fields: [submissionId], references: [id],onDelete: Cascade)         
+  submission      Submission       @relation("Responses",fields: [submissionId], references: [id],onDelete: Cascade)         
   @@index([submissionId])
 }
 
-
+enum QuestionType {
+  single
+  multi
+  both
+}
