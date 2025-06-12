@@ -11,19 +11,19 @@ export  default async function() {
         try{
             if(!session ||!session.user||!session.user.id) return[];       
             const coverLetters = await prisma.coverletter.findMany({
-                        where:{
-                            userId:session.user.id
-                        },
-                        select:{
-                            id:true,
-                            companyName:true,
-                            createdAt:true,
-                            jobTitle:true,
-                            name:true
-                        },
-                        orderBy:{
-                            createdAt:"desc"
-                        }
+                where:{
+                    userId:session.user.id
+                },
+                select:{
+                    id:true,
+                    companyName:true,
+                    createdAt:true,
+                    jobTitle:true,
+                    name:true
+                },
+                orderBy:{
+                    createdAt:"desc"
+                }
             })
             return coverLetters;
         }
