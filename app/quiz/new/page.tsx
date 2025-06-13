@@ -19,10 +19,10 @@ import { useRouter } from 'next/navigation';
 import { useTopicStore } from '@/store/topicStore';
 type QuestionType = "single" | "multi" | "both";
 const topicCountSchema = quizSchema.pick({
-    topics: true,
+    topics:true,
     count: true,
     type:true
-});
+})
 export default function() {
     const { topics,clearTopics} = useTopicStore();
     const router=useRouter();
@@ -83,6 +83,7 @@ export default function() {
                 title: "Quiz: success",
                 description: "Successfully created quiz",
             });
+            console.log("****done");
             console.log(is);
             router.push(`/quiz/${is}`);
 
@@ -154,10 +155,10 @@ export function Topic() {
           setInputValue('');
         }
     };
-    const handleClick=(topic:string)=>{
+    const handleClick=(topic:{value:string})=>{
         let newTopics = new Set(topics)
         newTopics.delete(topic)
-        deleteTopic(topic);
+        deleteTopic(topic.value);
     }
     return (
         <div className='w-2/3'>
@@ -170,11 +171,11 @@ export function Topic() {
                     <div className='border'>
                         <div className='pb-10 pt-1 flex flex-wrap gap-2'>
                             {[...topics].map((topic)=>(
-                                <div key={topic} className=' max-w-min flex-col bg-slate-200 rounded hover:bg-slate-300'>
+                                <div key={topic.value} className=' max-w-min flex-col bg-slate-200 rounded hover:bg-slate-300'>
                                     <div className='pt-0  flex justify-end text-xs font-bold text-red-700'>
                                        <button type="button" onClick={() => handleClick(topic)}>x</button>
                                     </div>
-                                    <div className='pl-0.5 pr-4 text-xs'>{topic}</div>
+                                    <div className='pl-0.5 pr-4 text-xs'>{topic.value}</div>
                                     
                                 </div>
                             ))}
