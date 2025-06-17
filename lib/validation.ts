@@ -24,14 +24,18 @@ export const coverLetterSchema = z.object({
 
 
 export const quizSchema = z.object({
+  id:z.string(),
   name:z.string().min(2,"quiz name must be at least 2 characters"),
-  topic:z.string().min(4,"Topic name must be at least 4 characters"),
+  topics: z.array(z.object({ value: z.string().min(1, "Topic value must be at least 1 character") })),
+  type: z.enum(["single", "multi", "both"]).describe("must be of specific type"),
   count:z.number().gte(5,"Number of question must be greater than 5"),
+  createdAt:z.date(),
 })
 
 export const questionSchema = z.object({
   id:z.string().min(2,"id must be at least 2 characters"),
   value:z.string().min(2,"quiz name must be at least 2 characters"),
+  type:z.enum(["single","multi"]).describe("must be of specific type")
 })
 export const optionSchema=z.object({
   id:z.string().min(2,"id must be at least 2 characters"),
@@ -40,6 +44,7 @@ export const optionSchema=z.object({
 export const questionWithOptionsSchema = questionSchema.extend({
   options: z.array(optionSchema),
 });
+
 
 export type UsersSignUpType = z.infer<typeof userSignUpSchema>;
 export type UsersSignInType = z.infer<typeof userSignInSchema>;
