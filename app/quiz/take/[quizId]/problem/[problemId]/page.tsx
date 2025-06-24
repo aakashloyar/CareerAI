@@ -12,7 +12,10 @@ type RouteParams = {
 export default function Problem() {
   const { quizId, problemId } = useParams() as RouteParams
   const questions = useQuestionStore((state) => state.questions)
-  console.log(questions)
+   // Wait for questions to load
+   if (!questions || questions.length === 0) {
+    return <div>Loading questions...</div>
+  }
   return (
     <div>
       <h2>Quiz ID: {quizId}</h2>

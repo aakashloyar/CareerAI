@@ -1,3 +1,4 @@
+'use client'
 import {
     Pagination,
     PaginationContent,
@@ -7,36 +8,33 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
-interface PageProps {
-  params: Promise<{
-    quizId: string
-  }>,
-  children:React.ReactNode
-
-}
-import { getServerSession } from "next-auth";
-import {options} from '@/auth'
-import {prisma} from '@/lib/prisma'
-export default async function DashboardLayout({ params,children }:PageProps) {
-  const {quizId} = await params;
-  const fetch = async ()=> {
-    const session = await getServerSession(options);
-    try {
-        if (!session || !session.user || !session.user.id) return;       
-        const quiz=await prisma.quiz.findUnique({
-            where:{
-              id:quizId
-            },
-            select:{
-              id:true,
-              count:true,
-            }
-        });
-    } catch {
-        return [];
-    }
-  }
-  await fetch();
+import { useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { useQuestionStore } from '@/store/questionStore';
+import TakeClient from '../_components/takeclient';
+type RouteParams = {
+  quizId: string;
+};
+export default function DashboardLayout({children} :{children:React.ReactNode}) {
+  const { quizId } = useParams() as RouteParams;
+  console.log(quizId)
+  const { setQuestions } = useQuestionStore();
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const res1 = await fetch(`/api/quiz/${quizId}/questions`);
+          const res2=await fetch(`/api/quiz/${quizId}/info`);
+          const questions = await res1.json();
+          const quizdata  = await res2.json();
+          setQuestions(questions);
+          console.log(questions)
+        } catch (err) {
+          console.error('Failed to fetch questions', err);
+        }
+      };
+  
+    if (quizId) fetchData();
+  }, [quizId, setQuestions]);
   return (
     <div className="min-h-screen pt-14 flex flex-col">
       <header className='flex justify-between px-6 border-4 border-gray-600 rounded-xl p-8'>
