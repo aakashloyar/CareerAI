@@ -3,6 +3,7 @@ import AppBar from '@/components/Appbar'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {Providers} from './Provider'
+import { Toaster } from "@/components/ui/toaster"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
       <Providers>
           <AppBar/>
           {children}
+          <Toaster />
       </Providers> 
         
       </body>

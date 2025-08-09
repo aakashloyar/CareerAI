@@ -68,3 +68,125 @@ user User @relation("UserOtps", fields: [mail], references: [email], onDelete: C
 
 //horizontal and vertical scaling
 //hi
+
+
+// model Question {
+//   id        String            @id @default(uuid())
+//   question  String
+//   quizId    String
+//   quiz      Quiz              @relation(fields: [quizId], references: [id], onDelete: Cascade)
+//   options   QuestionOption[]  // <-- relation via join table
+//   correctOptionId String?     // Optional if you want to reference the correct option
+//   correctOption   Option?     @relation("CorrectOption", fields: [correctOptionId], references: [id])
+// }
+
+// model Option {
+//   id        String            @id @default(uuid())
+//   value     String
+//   questions QuestionOption[]  // <-- relation via join table
+// }
+// model QuestionOption {
+//   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+//   questionId String
+
+//   option     Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+//   optionId   String
+
+//   @@id([questionId, optionId]) // Composite primary key
+// }
+//this is the way to make many to many relation
+
+
+//findUnique vs         findFirst
+//key:must be unique    not required
+
+
+//one to one
+
+//model Question {
+  id              String         @id @default(uuid())
+  quizId          String  
+  value           String
+  quiz            Quiz           @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
+  options         Option[]       @relation("QueOpt")
+  answer          Answer?  
+
+  @@index([quizId])
+}
+model Answer {
+  id              String         @id  @default(uuid())
+  questionId      String         @unique
+  optionId        String
+  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+
+
+model Customer {
+  id      Int     @id @default(autoincrement())
+  name    String
+  orders  Order[] // one customer has many orders
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  customer    Customer @relation(fields: [customerId], references: [id])
+  orderDate   DateTime
+}
+//many to one relation
+
+
+model Question {
+  id              String         @id @default(uuid())
+  quizId          String  
+  value           String
+  quiz            Quiz           @relation("Questions",fields: [quizId], references: [id],onDelete: Cascade)         
+  options         Option[]       @relation("QueOpt")
+  @@index([quizId])
+}
+
+
+//many to many in which you are not creating a 3rd table prisma only creating a 3rd table
+model Option {
+  id              String         @id @default(uuid())
+  value           String
+  questions       Question[]     @relation("QueOpt")  //many to many      
+}
+
+//many to many in which you are creating a external table
+model Question {
+  id        String           @id @default(uuid())
+  quizId    String
+  value     String
+  quiz      Quiz             @relation("Questions", fields: [quizId], references: [id], onDelete: Cascade)
+
+  // relation via explicit join table
+  questionOptions QuestionOption[]
+  
+  @@index([quizId])
+}
+
+model Option {
+  id        String           @id @default(uuid())
+  value     String
+  
+  questionOptions QuestionOption[]  // relation via explicit join table
+}
+
+model QuestionOption {
+  questionId String
+  optionId   String
+  isCorrect  Boolean  @default(false)  // mark if this option is correct for this question
+
+  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option    Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, optionId])  // composite primary key to avoid duplicates
+}
+
+
+
+//e.preventdefault
+//help you to prevent browser default behaviour on an action
+//In React with TypeScript, component props must be passed as a single object, not as multiple parameters.

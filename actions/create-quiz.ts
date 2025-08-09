@@ -6,6 +6,7 @@ import {model} from '@/lib/geminimodel'
 import {quizType} from '@/lib/validation'
 type Input=Pick<quizType,"topics" | "count"|"type">;
 export async function createQuiz(input:Input) {
+    
     const session = await getServerSession(options);
     if (!session || !session.user?.id) throw new Error("Unauthorized");
     const userId=session.user.id;
@@ -19,7 +20,7 @@ export async function createQuiz(input:Input) {
     `You are a quiz generation assistant.
     Based on the following inputs, generate a list of multiple-choice questions with ${(input.type=="both")?"single and multi both":input.type} correct option.
 
-    Topic: ${input.topics}
+    Topic: ${input.topics.map((topic) => topic.value).join(" ")}
 
     Number of Questions: ${input.count}
 
@@ -43,7 +44,7 @@ export async function createQuiz(input:Input) {
     const quiz=await prisma.quiz.create({
         data:{
             count:input.count,
-            type:input.type,
+            type: input.type === "both" ? undefined : input.type,
             name:"default",
             userId:userId
         }
@@ -68,6 +69,7 @@ export async function createQuiz(input:Input) {
     const res=await model.generateContent(prompt);
     const response=res.response.text();
     const arr=parseQuizOutput(response);
+    console.log(arr);
     for(let i=0;i<arr.length;i++) {
         const current=arr[i];
         const que=await prisma.question.create({
@@ -92,7 +94,6 @@ export async function createQuiz(input:Input) {
           })
         }
     }
-    console.log("****done");
     return quiz.id;
 }
 
@@ -141,6 +142,7 @@ function parseQuizOutput(raw: string): QuizQuestion[] {
         is=true;
         break;
       }
+      isCorrect[x]=true;
     }
     if (is) {
       console.warn("Answer letter out of bounds:");

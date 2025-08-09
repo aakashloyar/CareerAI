@@ -1,5 +1,5 @@
 'use client'
-import { qlisttype } from "../list/page"
+import { qlisttype } from "@/app/quiz/page"
 import {Button} from "@/components/ui/button"
 import { useRouter } from "next/navigation";
 import {
@@ -19,7 +19,14 @@ export function Quiz({quiz}:{quiz:qlisttype}) {
             router.push(`/quiz/${quiz.id}`)
         }}>
             <TableCell className="font-medium">{quiz.name}</TableCell>
-            <TableCell>{quiz.topic}</TableCell>
+            <TableCell>
+                <div className='flex justify-normal'>   
+                    {quiz.topics.map((topic)=>(
+                    <div key={topic.value} className='mx-0.5 p-0.5 bg-slate-200 rounded'># {topic.value}</div> 
+                    ))}
+                </div>
+                
+            </TableCell>
             <TableCell className="">{quiz.createdAt.toISOString().split("T")[0]}</TableCell>
             <TableCell>{quiz.count}</TableCell>
         </TableRow>

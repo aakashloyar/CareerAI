@@ -36,12 +36,19 @@ import {
  import { quizType } from "@/lib/validation"
  import { Button } from "@/components/ui/button"
  import { useState } from "react"
- type newquizType=Omit<quizType,""> & {id:string , createdAt:Date}
-export function Side({quiz}:{quiz:newquizType|null}) {
+ type newquizType=Pick<quizType,"id"|"createdAt"|"name"|"count"|"type">
+ 
+ type SideProps = {
+    quiz: newquizType | null;
+    topics:{value:string}[];
+  };
+  
+ export function Side({ quiz, topics }: SideProps) {
     const [open, setOpen] = useState(false)
     const handleClose = () => {
         setOpen(false)
     }
+    console.log(quiz);
     return (
         <div className='w-full'>
             <Card>
@@ -52,7 +59,15 @@ export function Side({quiz}:{quiz:newquizType|null}) {
                 <CardContent>
                     <div className='flex'>
                         <div className='font-bold px-1'>Topics: </div>
-                        <div> {quiz?.topic}</div>
+                        <div className='flex flex-wrap gap-2'> 
+                            {topics.map((topic) => (
+                                <div key={topic.value} className=' bg-slate-200 rounded hover:bg-slate-300 p-1'>
+                                   # {topic.value}
+                                
+                                </div>
+                            ))}
+
+                        </div>
                     </div>
                     <div className='flex'>
                         <div className='font-bold px-1'>Number of questions: </div>
@@ -78,8 +93,6 @@ export function Side({quiz}:{quiz:newquizType|null}) {
                             </div>
                         </DialogContent>
                     </Dialog>
-
-
                 </CardFooter>
             </Card>
         </div>

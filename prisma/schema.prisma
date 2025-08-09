@@ -8,110 +8,149 @@ datasource db {
 }
 
 model User {
-  id            String           @id @default(uuid())
-  email         String           @unique
+  id            String        @id @default(uuid())
+  email         String        @unique
   password      String?
-  emailVerified Boolean          @default(false)
+  emailVerified Boolean       @default(false)
   profileImage  String?
   lastLogin     DateTime?
   firstName     String?
   lastName      String?
-  otps          Otp[]            @relation("UserOtps")
-  coverletters  Coverletter[]    @relation("CoverLetters")
-  quizs         Quiz[]           @relation("Quizs")
+  coverletters  Coverletter[] @relation("CoverLetters")
+  otps          Otp[]         @relation("UserOtps")
+  quizs         Quiz[]        @relation("Quizs")
+
   @@index([email])
 }
 
 model Otp {
-  id        String               @id @default(uuid())
+  id        String   @id @default(uuid())
   email     String
-  sessionId String               @unique
+  sessionId String   @unique
   otp       String
-  user      User                 @relation("UserOtps", fields: [email], references: [email], onDelete: Cascade)
-  createdAt DateTime             @default(now())
   expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation("UserOtps", fields: [email], references: [email], onDelete: Cascade)
+
   @@unique([email, sessionId])
   @@index([email, sessionId])
 }
 
 model Coverletter {
-  id              String         @id @default(cuid())
-  userId          String
-  name            String         @default("Default Name") 
-  content         String  
-  jobDescription  String
-  companyName     String  
-  jobTitle        String    
-  status          String         @default("draft") 
-  user            User           @relation("CoverLetters",fields: [userId], references: [id],onDelete: Cascade)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String   @id @default(cuid())
+  userId         String
+  content        String
+  jobDescription String
+  companyName    String
+  jobTitle       String
+  status         String   @default("draft")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  name           String   @default("Default Name")
+  user           User     @relation("CoverLetters", fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
 }
 
 model Quiz {
-  id              String         @id @default(uuid())
-  userId          String  
-  name            String    
-  topic           String[]
-  count           Int
-  user            User           @relation("Quizs",fields: [userId], references: [id],onDelete: Cascade)         
-  questions       Question[]     @relation("Questions")
-  submissions     Submission[]   @relation("Submissions")
-  createdAt       DateTime       @default(now())
+  id          String       @id @default(uuid())
+  userId      String
+  name        String
+  count       Int
+  type        QuizType     @default(single)
+  createdAt   DateTime     @default(now())
+  questions   Question[]   @relation("Questions")
+  user        User         @relation("Quizs", fields: [userId], references: [id], onDelete: Cascade)
+  topics      QuizTopic[]
+  submissions Submission[] @relation("Submissions")
+
   @@index([userId])
   @@index([name])
 }
 
+model Topic {
+  id    String      @id @default(uuid())
+  value String
+  quizs QuizTopic[]
+}
+
+model QuizTopic {
+  quizId  String
+  topicId String
+  quiz    Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([quizId, topicId])
+}
+
 model Question {
-  id        String                @id @default(uuid())
-  quizId    String
-  value     String
-  type      QuestionType          @default(single)
-  quiz      Quiz                  @relation("Questions", fields: [quizId], references: [id], onDelete: Cascade)
-  queOpt    QueOpt[]
+  id      String   @id @default(uuid())
+  quizId  String
+  value   String
+  type    QuestionType @default(single)
+  options QueOpt[]
+  responses Response[] @relation("Res_Que")
+  quiz    Quiz     @relation("Questions", fields: [quizId], references: [id], onDelete: Cascade)
+
   @@index([quizId])
 }
 
 model Option {
-  id        String                @id @default(uuid())
-  value     String
-  queOpt    QueOpt[]  
+  id     String   @id @default(uuid())
+  value  String
+  queOpt QueOpt[]
+  resOpt ResponseOption[] @relation("Res_Opt")
 }
 
 model QueOpt {
   questionId String
   optionId   String
-  isCorrect  Boolean               @default(false)  
-
-  question   Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  option     Option                @relation(fields: [optionId], references: [id], onDelete: Cascade)
-
-  @@id([questionId, optionId]) 
+  isCorrect  Boolean  @default(false)
+  option     Option   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  @@id([questionId, optionId])
 }
 
 model Submission {
-  id              String           @id @default(uuid())
-  userId          String  
-  quizId          String
-  percentage      String
-  quiz            Quiz             @relation("Submissions",fields: [quizId], references: [id],onDelete: Cascade)        
-  response        Response[]       @relation("Responses")
-  createdAt       DateTime         @default(now())
-  sumbittedAt     DateTime?  
+  id          String     @id @default(uuid())
+  userId      String
+  time        Int
+  createdAt   DateTime   @default(now())
+  quizId      String
+  percentage  String
+  sumbittedAt DateTime?
+  response    Response[] @relation("Responses")
+  quiz        Quiz       @relation("Submissions", fields: [quizId], references: [id], onDelete: Cascade)
   @@index([userId])
 }
+
 model Response {
-  id              String           @id @default(uuid())
-  submissionId    String
-  questionId      String   
-  selection       String
-  verdict         Boolean 
-  submission      Submission       @relation("Responses",fields: [submissionId], references: [id],onDelete: Cascade)         
+  id           String           @id @default(uuid())
+  submissionId String
+  questionId   String
+  verdict      Boolean
+  submission   Submission       @relation("Responses", fields: [submissionId], references: [id], onDelete: Cascade)
+  question     Question         @relation("Res_Que",fields: [questionId], references: [id], onDelete: Cascade)
+  selected     ResponseOption[] @relation("Marked")
   @@index([submissionId])
+  @@index([questionId])
 }
 
+model ResponseOption {
+  responseId String
+  optionId   String
+  response   Response @relation("Marked",fields: [responseId], references: [id], onDelete: Cascade)
+  option     Option   @relation("Res_Opt",fields: [optionId], references: [id], onDelete: Cascade)
+  @@id([responseId])
+}
+
+
 enum QuestionType {
+  single
+  multi
+}
+
+enum QuizType {
   single
   multi
   both

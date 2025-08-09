@@ -19,7 +19,9 @@ export default function UserMenu() {
   const handleCoverLetterClick = () => {
     router.push("/ai-cover-letter")
   }
-
+  const handleQuizClick = () => {
+    router.push("/quiz")
+  }
   if (status === "loading") return null // prevent mismatch
 
   return (
@@ -36,6 +38,9 @@ export default function UserMenu() {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleCoverLetterClick}>
               Cover Letter
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleQuizClick}>
+              Quiz
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => signOut()}>
               Sign out
