@@ -116,8 +116,9 @@ model Submission {
   userId      String
   time        Int
   createdAt   DateTime   @default(now())
+  startedAt   DateTime?
   quizId      String
-  percentage  String
+  percentage  String?
   sumbittedAt DateTime?
   response    Response[] @relation("Responses")
   quiz        Quiz       @relation("Submissions", fields: [quizId], references: [id], onDelete: Cascade)
