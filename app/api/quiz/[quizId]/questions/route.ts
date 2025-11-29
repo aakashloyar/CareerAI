@@ -37,7 +37,10 @@ export async function GET(req: Request,  { params }:PageProps ) {
 
     const formatted = rawQuestions.map((q) => ({
       ...q,
-      options: q.options.map((o) => o.option),
+      options: q.options.map((o) => ({
+        ...o.option,
+        true: false,  // add default field
+      })),
     }));
 
     return NextResponse.json(formatted);
