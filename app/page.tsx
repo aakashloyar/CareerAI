@@ -16,10 +16,7 @@ export default function Home() {
 
   return (
     <div className='bg-slate-900 min-h-screen text-white '>
-       <div className=' flex justify-center pt-32 text-xl text-gray-300 px-52'>
-          {/* {JSON.stringify(session?.user?.name)} */}
-          {JSON.stringify(session)}
-      </div>
+       
 
       <div className='flex justify-center pt-32 text-7xl font-bold text-gray-300 px-2'>
         Your AI Career Coach for

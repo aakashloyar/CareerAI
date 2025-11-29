@@ -11,7 +11,7 @@ import {prisma} from '@/lib/prisma'
 import { getServerSession } from "next-auth";
 import {options} from '@/auth'
 import { quizType } from "@/lib/validation";
-import {Quiz} from "@/app/quiz/_components/listtable";
+import {Each_Quiz} from "@/app/quiz/_components/each_quiz";
 import {New} from "@/app/quiz/_components/new"
 export type qlisttype=Pick<quizType,'name'|'count'|'createdAt'|'id'|'type'|'topics'>;
 
@@ -80,7 +80,7 @@ export default async function() {
                       </TableHeader>
                       <TableBody>
                           {qlist.map((quiz)=>(
-                              <Quiz quiz={quiz} key={quiz.id}/>
+                              <Each_Quiz quiz={quiz} key={quiz.id}/>
                           ))}
                       </TableBody>
                   </Table>
@@ -93,6 +93,7 @@ export default async function() {
             <div className='h-full flex justify-center items-center m-4'>
               <New/>
             </div>
+
           </div>
         </div>
       </div>

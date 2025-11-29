@@ -10,7 +10,7 @@ import {
  import { getServerSession } from "next-auth";
 import {options} from '@/auth'
 import {prisma} from '@/lib/prisma'
-import {Side} from "@/app/quiz/_components/side"
+import {Start_Quiz} from "@/app/quiz/_components/start_quiz"
 import {Link_Submission} from "@/app/quiz/_components/link"
 
 interface PageProps {
@@ -75,15 +75,22 @@ export default async function Page({ params }: PageProps) {
 
     return (
         <div className='pt-14'>
-           <div className='flex justify-between'>
-                <div className='w-9/12 mr-2 border-4 border-gray-200 rounded-lg'>
-                    <div className='flex justify-center text-3xl font-semibold'>Your Submissions</div>
-                    <List submissions={submissions}/>
+            <div className='mt-14 grid grid-cols-12'>
+                <div className='col-span-9 flex justify-center m-4 border-4 border-t-8 rounded-xl border-gray-300'>
+                    <div className='w-full'>
+                        <div className='bg-slate-300 rounded p-1'>Your Submissions</div>
+                        <List submissions={submissions}/>
+                    </div>
                 </div>
-                <div className='w-3/12 ml-2 border-4 border-gray-200 rounded-lg'>
-                    <Side quiz={quiz} topics={topics} />
+                <div className='col-span-3 flex justify-center m-4 border-4 border-t-8 rounded-xl border-gray-300'>
+                    <div className='w-full'>
+                        <div className='bg-slate-300 rounded p-1'>Attempt</div>
+                        <div className='p-0'>
+                            <Start_Quiz quiz={quiz} topics={topics} />
+                        </div>
+                    </div>
                 </div>
-           </div>
+            </div>
         </div>
     );
 }

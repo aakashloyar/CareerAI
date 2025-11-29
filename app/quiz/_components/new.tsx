@@ -13,12 +13,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useState ,useEffect} from 'react' 
 import { quizSchema } from "@/lib/validation"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from 'next/navigation';
 import { useTopicStore } from '@/store/topicStore';
 type QuestionType = "single" | "multi" | "both";
+import Spinner from "@/components/spinner";
+import { Dice1 } from "lucide-react"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 const topicCountSchema = quizSchema.pick({
     topics:true,
     count: true,
@@ -30,6 +41,7 @@ export function New() {
     const { toast } = useToast()
     const [count, setCount] = useState<number>(0);
     const [type, setType] = useState<QuestionType>("single");
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(()=>{
         clearTopics();
     },[])
@@ -74,6 +86,7 @@ export function New() {
         }
         console.log("***Reached at generating quiz")
         console.log(validated.data.topics)
+        setIsLoading(true)
         const is = await createQuiz(validated.data);
         if (!is) {
             toast({
@@ -92,142 +105,86 @@ export function New() {
         }
         return;
     })  
+    
     return (
         <Sheet>
+            
         <SheetTrigger asChild>
             <Button variant="outline" className='bg-slate-900 text-white'>Create New Quiz</Button>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent side="right" className="w-[500px] max-w-[500px]">
             <SheetHeader>
-            <SheetTitle>AI-powered Quiz</SheetTitle>
-            <SheetDescription>
-            Challenge yourself with our AI-powered quiz — personalized, smart, and always fresh!
-            </SheetDescription>
+                <VisuallyHidden>
+                <SheetTitle>AI-powered Quiz</SheetTitle>
+                </VisuallyHidden>
             </SheetHeader>
-            <form 
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault(); // Prevent form submission on Enter key
-                }
-            }}
-            onSubmit={(e) => {
-                e.preventDefault();
-                handleClick(); // Explicitly call handleClick
-            }}>
+            {isLoading?(
+                <div className="flex flex-col items-center justify-center h-full">
+                    <Spinner size="xxl" />
+                    <p className="mt-3 text-lg font-medium text-gray-600 animate-pulse">
+                       Generating Quiz ...
+                    </p>
+                </div>
 
-                <CardContent className="space-y-2">
-                    
-                    <div>
-                        <Topic/>
-                    </div>
-                    <div className='flex'>
-                        <div className="space-y-1">
-                        <Label htmlFor="no">Number of questions</Label>
-                        <Input id="no" value={count} onChange={(e)=>setCount(parseInt(e.target.value||"0"))}type="number" />
-                        </div>
-                        <div className='pl-3'>
+            )
+            :(
+                <div>
+                    <SheetHeader>
+                        <SheetTitle>AI-powered Quiz</SheetTitle>
+                        <SheetDescription>
+                        Challenge yourself with our AI-powered quiz — personalized, smart, and always fresh!
+                        </SheetDescription>
+                    </SheetHeader>
+                    <form 
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault(); // Prevent form submission on Enter key
+                        }
+                    }}
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleClick(); // Explicitly call handleClick
+                    }}>
+
+                        <CardContent className="space-y-2">
+                            
                             <div>
-                                <Label htmlFor="type">Type of Questions</Label>
+                                <Topic/>
                             </div>
-                            <div className='pt-1'>
-                                <select className="px-0.5 py-1.5 rounded-sm bg-slate-50 border" value={type} onChange={(e)=>setType(e.target.value as QuestionType)} id="type" name="type">
-                                    <option value="single">Single Correct</option>
-                                    <option value="multi">Multi Correct</option>
-                                    <option value="both">Both </option>
-                                </select>
+                            <div className='flex'>
+                                <div className="space-y-1">
+                                <Label htmlFor="no">Number of questions</Label>
+                                <Input id="no" value={count} onChange={(e)=>setCount(parseInt(e.target.value||"0"))}type="number" />
+                                </div>
+                                <div className='pl-3'>
+                                    <div>
+                                        <Label htmlFor="type">Type of Questions</Label>
+                                    </div>
+                                    <div className='pt-1'>
+                                        <select className="px-0.5 py-1.5 rounded-sm bg-slate-50 border" value={type} onChange={(e)=>setType(e.target.value as QuestionType)} id="type" name="type">
+                                            <option value="single">Single Correct</option>
+                                            <option value="multi">Multi Correct</option>
+                                            <option value="both">Both </option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
                             </div>
                             
-                        </div>
-                    </div>
-                    
-                </CardContent>
-                <SheetFooter>
-                <Button type="submit">Save changes</Button>
-                <SheetClose asChild>
-                  <Button type="submit" >Generate</Button>
-                </SheetClose>
-                </SheetFooter>
-                <CardFooter>
-                    <Button type="submit" >Generate</Button>
-                </CardFooter>
-            </form>
-            <div className="grid flex-1 auto-rows-min gap-6 px-4">
-            <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-name">Name</Label>
-                <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-            </div>
-            <div className="grid gap-3">
-                <Label htmlFor="sheet-demo-username">Username</Label>
-                <Input id="sheet-demo-username" defaultValue="@peduarte" />
-            </div>
-            </div>
-            <SheetFooter>
-            <Button type="submit">Save changes</Button>
-            <SheetClose asChild>
-                <Button variant="outline">Close</Button>
-            </SheetClose>
-            </SheetFooter>
+                        </CardContent>
+                    </form>
+                    <SheetFooter>
+                        <Button type="submit" onClick={handleClick}>Start Now</Button>
+                        <SheetClose asChild>
+                            <Button variant="outline">Close</Button>
+                        </SheetClose>
+                    </SheetFooter>
+                </div>
+            )}
+            
         </SheetContent>
         </Sheet>
     )
-}
-
-
-export default function() {
-    
-  return (
-    <div className='flex justify-center pt-20'>
-        <Card className='w-1/2'>
-            <CardHeader>
-                <CardTitle>AI-powered Quiz</CardTitle>
-                <CardDescription>
-                Challenge yourself with our AI-powered quiz — personalized, smart, and always fresh!
-                </CardDescription>
-            </CardHeader>
-            <form 
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault(); // Prevent form submission on Enter key
-                }
-            }}
-            onSubmit={(e) => {
-                e.preventDefault();
-                handleClick(); // Explicitly call handleClick
-            }}>
-
-                <CardContent className="space-y-2">
-                    
-                    <div>
-                        <Topic/>
-                    </div>
-                    <div className='flex'>
-                        <div className="space-y-1">
-                        <Label htmlFor="no">Number of questions</Label>
-                        <Input id="no" value={count} onChange={(e)=>setCount(parseInt(e.target.value||"0"))}type="number" />
-                        </div>
-                        <div className='pl-3'>
-                            <div>
-                                <Label htmlFor="type">Type of Questions</Label>
-                            </div>
-                            <div className='pt-1'>
-                                <select className="px-0.5 py-1.5 rounded-sm bg-slate-50 border" value={type} onChange={(e)=>setType(e.target.value as QuestionType)} id="type" name="type">
-                                    <option value="single">Single Correct</option>
-                                    <option value="multi">Multi Correct</option>
-                                    <option value="both">Both </option>
-                                </select>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    
-                </CardContent>
-                <CardFooter>
-                    <Button type="submit" >Generate</Button>
-                </CardFooter>
-            </form>
-        </Card>
-    </div>    
-  )
 }
 
 export function Topic() {
@@ -272,7 +229,6 @@ export function Topic() {
                                 onKeyDown={handleKeyDown}
                                 placeholder="Type and press Enter"
                             />
-
                         </div>
                         
                     </div>
@@ -281,3 +237,5 @@ export function Topic() {
         </div>
     )
 }
+
+
